@@ -12,7 +12,7 @@ class Car extends _Car with RealmEntity, RealmObject {
     String name,
     String model,
   ) {
-    RealmObject.set(this, 'id', id);
+    RealmObject.set(this, '_id', id);
     RealmObject.set(this, 'name', name);
     RealmObject.set(this, 'model', model);
   }
@@ -20,7 +20,7 @@ class Car extends _Car with RealmEntity, RealmObject {
   Car._();
 
   @override
-  String get id => RealmObject.get<String>(this, 'id') as String;
+  String get id => RealmObject.get<String>(this, '_id') as String;
   @override
   set id(String value) => throw RealmUnsupportedSetError();
 
@@ -42,8 +42,9 @@ class Car extends _Car with RealmEntity, RealmObject {
   static SchemaObject? _schema;
   static SchemaObject _initSchema() {
     RealmObject.registerFactory(Car._);
-    return const SchemaObject(Car, 'Car', [
-      SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
+    return const SchemaObject(Car, 'car', [
+      SchemaProperty('_id', RealmPropertyType.string,
+          mapTo: '_id', primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('model', RealmPropertyType.string),
     ]);

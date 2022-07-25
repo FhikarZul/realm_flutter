@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'view/home_page.dart';
 
 void main() {
+  HttpOverrides.global = HttpOverrideApp();
   runApp(const MyApp());
 }
 
@@ -14,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      darkTheme: ThemeData.dark(),
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,5 +32,13 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(title: 'Realm Mongo DB'),
     );
+  }
+}
+
+class HttpOverrideApp extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = ((cert, host, port) => true);
   }
 }

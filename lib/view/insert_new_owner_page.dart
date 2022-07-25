@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:realm_flutter/db/data_source/data_source.dart';
 import 'package:realm_flutter/model/owner_model.dart';
+
+import '../data/db/local/local_data_source.dart';
 
 class InsertNewOwnerPage extends StatefulWidget {
   const InsertNewOwnerPage({Key? key}) : super(key: key);
@@ -49,7 +50,7 @@ class _InsertPageState extends State<InsertNewOwnerPage> {
                         name: name!,
                       );
 
-                      final dataSource = DataSource();
+                      final dataSource = LocalDataSource();
                       final result = await dataSource.insertNewOwner(
                           ownerModel: ownerModel);
 

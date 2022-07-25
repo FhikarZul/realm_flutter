@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:realm_flutter/db/data_source/data_source.dart';
 import 'package:realm_flutter/model/car_model.dart';
+
+import '../data/db/local/local_data_source.dart';
 
 class InsertNewCarPage extends StatefulWidget {
   const InsertNewCarPage({Key? key}) : super(key: key);
@@ -59,7 +60,7 @@ class _InsertPageState extends State<InsertNewCarPage> {
                         model: models!,
                       );
 
-                      final dataSource = DataSource();
+                      final dataSource = LocalDataSource();
                       final result =
                           await dataSource.insertNewCar(carModel: carModel);
 

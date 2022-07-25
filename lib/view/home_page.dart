@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:realm_flutter/db/data_source/data_source.dart';
+import 'package:realm_flutter/data/db/remote/remote_data_source.dart';
 import 'package:realm_flutter/model/car_with_owner_model.dart';
 import 'package:realm_flutter/view/insert_new_car_page.dart';
 import 'package:realm_flutter/view/insert_new_owner_page.dart';
 import 'package:realm_flutter/view/insert_to_garage.dart';
+
+import '../data/db/local/local_data_source.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -16,12 +18,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<String, CarWithOwnerModel> garage = {};
-  final dataSource = DataSource();
+  final dataSource = LocalDataSource();
+  final remoteDataSource = RemoteDatSource();
 
   @override
   void initState() {
     super.initState();
+    loginCheck();
     fetching();
+  }
+
+  void loginCheck() async {
+    final userCredential = await remoteDataSource.isLogin();
+    final syncResult = await remoteDataSource.synced(
+      userLogin: userCredential!,
+    );
+
+    print(syncResult);
   }
 
   void fetching() async {
@@ -38,8 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
           actions: [
             InkResponse(
-              onTap: () => fetching(),
-              child: const Icon(Icons.restart_alt),
+              onTap: () async {
+                final result = await remoteDataSource.logout();
+
+                print(result);
+              },
+              child: const Icon(Icons.power_settings_new_sharp),
             )
           ],
         ),

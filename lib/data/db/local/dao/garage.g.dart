@@ -12,27 +12,27 @@ class Garage extends _Garage with RealmEntity, RealmObject {
     String idCar,
     String idOwner,
   ) {
-    RealmObject.set(this, 'id', id);
-    RealmObject.set(this, 'idCar', idCar);
-    RealmObject.set(this, 'idOwner', idOwner);
+    RealmObject.set(this, '_id', id);
+    RealmObject.set(this, 'id_car', idCar);
+    RealmObject.set(this, 'id_owner', idOwner);
   }
 
   Garage._();
 
   @override
-  String get id => RealmObject.get<String>(this, 'id') as String;
+  String get id => RealmObject.get<String>(this, '_id') as String;
   @override
   set id(String value) => throw RealmUnsupportedSetError();
 
   @override
-  String get idCar => RealmObject.get<String>(this, 'idCar') as String;
+  String get idCar => RealmObject.get<String>(this, 'id_car') as String;
   @override
-  set idCar(String value) => RealmObject.set(this, 'idCar', value);
+  set idCar(String value) => RealmObject.set(this, 'id_car', value);
 
   @override
-  String get idOwner => RealmObject.get<String>(this, 'idOwner') as String;
+  String get idOwner => RealmObject.get<String>(this, 'id_owner') as String;
   @override
-  set idOwner(String value) => RealmObject.set(this, 'idOwner', value);
+  set idOwner(String value) => RealmObject.set(this, 'id_owner', value);
 
   @override
   Stream<RealmObjectChanges<Garage>> get changes =>
@@ -42,10 +42,11 @@ class Garage extends _Garage with RealmEntity, RealmObject {
   static SchemaObject? _schema;
   static SchemaObject _initSchema() {
     RealmObject.registerFactory(Garage._);
-    return const SchemaObject(Garage, 'Garage', [
-      SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
-      SchemaProperty('idCar', RealmPropertyType.string),
-      SchemaProperty('idOwner', RealmPropertyType.string),
+    return const SchemaObject(Garage, 'garage', [
+      SchemaProperty('_id', RealmPropertyType.string,
+          mapTo: '_id', primaryKey: true),
+      SchemaProperty('id_car', RealmPropertyType.string, mapTo: 'id_car'),
+      SchemaProperty('id_owner', RealmPropertyType.string, mapTo: 'id_owner'),
     ]);
   }
 }

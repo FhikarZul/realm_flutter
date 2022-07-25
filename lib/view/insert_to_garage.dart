@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:realm_flutter/db/data_source/data_source.dart';
 import 'package:realm_flutter/model/owner_model.dart';
 
+import '../data/db/local/local_data_source.dart';
 import '../model/car_model.dart';
 
 class InsertToGaragePage extends StatefulWidget {
@@ -12,7 +12,7 @@ class InsertToGaragePage extends StatefulWidget {
 }
 
 class _InsertToGaragePageState extends State<InsertToGaragePage> {
-  final dataSource = DataSource();
+  final dataSource = LocalDataSource();
   List<CarModel> cars = [];
   List<OwnerModel> owners = [];
 

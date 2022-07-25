@@ -1,18 +1,19 @@
 import 'dart:math';
 
 import 'package:realm/realm.dart';
-import 'package:realm_flutter/db/dao/car.dart';
-import 'package:realm_flutter/db/dao/garage.dart';
-import 'package:realm_flutter/db/dao/owner.dart';
 import 'package:realm_flutter/model/car_model.dart';
 import 'package:realm_flutter/model/car_with_owner_model.dart';
 import 'package:realm_flutter/model/owner_model.dart';
+
+import 'dao/car.dart';
+import 'dao/garage.dart';
+import 'dao/owner.dart';
 
 final configOwner = Configuration.local([Owner.schema], schemaVersion: 2);
 final configCar = Configuration.local([Car.schema], schemaVersion: 2);
 final configGarage = Configuration.local([Garage.schema], schemaVersion: 2);
 
-class DataSource {
+class LocalDataSource {
   final realmOwner = Realm(configOwner);
   final realmCar = Realm(configCar);
   final realmGarage = Realm(configGarage);
@@ -87,8 +88,8 @@ class DataSource {
     final result = realmGarage.all<Garage>();
 
     for (var garage in result) {
-      final carResult = realmCar.query<Car>('id == "${garage.idCar}"');
-      final ownerResult = realmOwner.query<Owner>('id == "${garage.idOwner}"');
+      final carResult = realmCar.query<Car>('_id == "${garage.idCar}"');
+      final ownerResult = realmOwner.query<Owner>('_id == "${garage.idOwner}"');
 
       final car = carResult.first;
       final owner = ownerResult.first;
@@ -117,7 +118,7 @@ class DataSource {
     required String idCar,
     required String idOwner,
   }) async {
-    final toDelete = realmGarage.query<Garage>('id == "$idGarage"').first;
+    final toDelete = realmGarage.query<Garage>('_id == "$idGarage"').first;
     try {
       realmGarage.write(
         () => realmGarage.delete(toDelete),
