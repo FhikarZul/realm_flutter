@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:realm_flutter/model/owner_model.dart';
 
-import '../data/db/local/local_data_source.dart';
+import '../data/db/local/data_source.dart';
 import '../model/car_model.dart';
 
 class InsertToGaragePage extends StatefulWidget {
@@ -12,7 +12,7 @@ class InsertToGaragePage extends StatefulWidget {
 }
 
 class _InsertToGaragePageState extends State<InsertToGaragePage> {
-  final dataSource = LocalDataSource();
+  final dataSource = DataSource();
   List<CarModel> cars = [];
   List<OwnerModel> owners = [];
 
@@ -27,6 +27,7 @@ class _InsertToGaragePageState extends State<InsertToGaragePage> {
     fetchingOwner();
   }
 
+  //mengambil data mobil
   void fetchingCar() async {
     final result = await dataSource.getAllCars();
 
@@ -35,6 +36,7 @@ class _InsertToGaragePageState extends State<InsertToGaragePage> {
     });
   }
 
+  //mengambil data pemilik
   void fetchingOwner() async {
     final result = await dataSource.getAllOwners();
 

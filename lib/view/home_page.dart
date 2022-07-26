@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:realm_flutter/data/db/remote/remote_data_source.dart';
 import 'package:realm_flutter/model/car_with_owner_model.dart';
 import 'package:realm_flutter/view/insert_new_car_page.dart';
 import 'package:realm_flutter/view/insert_new_owner_page.dart';
 import 'package:realm_flutter/view/insert_to_garage.dart';
 
-import '../data/db/local/local_data_source.dart';
+import '../data/db/config/synchronization.dart';
+import '../data/db/local/data_source.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -18,25 +18,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<String, CarWithOwnerModel> garage = {};
-  final dataSource = LocalDataSource();
-  final remoteDataSource = RemoteDatSource();
+  final dataSource = DataSource();
+  final remoteDataSource = Synchronization();
 
   @override
   void initState() {
     super.initState();
-    loginCheck();
     fetching();
   }
 
-  void loginCheck() async {
-    final userCredential = await remoteDataSource.isLogin();
-    final syncResult = await remoteDataSource.synced(
-      userLogin: userCredential!,
-    );
-
-    print(syncResult);
-  }
-
+  //mengambil datda mobil dengan pemilik di garasi
   void fetching() async {
     final result = await dataSource.getAllCarsWithOwner();
     setState(() {
@@ -52,11 +43,39 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: [
             InkResponse(
               onTap: () async {
+                //logout
                 final result = await remoteDataSource.logout();
 
-                print(result);
+                Future.delayed(
+                  const Duration(milliseconds: 0),
+                  (() {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result),
+                      ),
+                    );
+                  }),
+                );
               },
               child: const Icon(Icons.power_settings_new_sharp),
+            ),
+            InkResponse(
+              onTap: () async {
+                //melakukan sinkronisasi
+                final result = await dataSource.syncAllToServer();
+
+                Future.delayed(
+                  const Duration(milliseconds: 0),
+                  (() {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result),
+                      ),
+                    );
+                  }),
+                );
+              },
+              child: const Icon(Icons.sync),
             )
           ],
         ),
@@ -64,38 +83,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ? const Center(
                 child: Text('Garage is empty!'),
               )
-            // : ListView.builder(
-            //     itemCount: garage.length,
-            //     itemBuilder: ((context, index) {
-            //       final item = garage[index];
-
-            //       return Card(
-            //         child: InkWell(
-            //           onTap: () {
-            //             showDialog(
-            //                 context: context,
-            //                 builder: (context) {
-            //                   return AlertDialog(
-            //                     title: const Text('Detail'),
-            //                     content: Column(
-            //                       mainAxisSize: MainAxisSize.min,
-            //                       crossAxisAlignment: CrossAxisAlignment.start,
-            //                       children: [
-            //                         Text('Model: ${item!.car.model}'),
-            //                         Text('Owner: ${item.owner.name}'),
-            //                       ],
-            //                     ),
-            //                   );
-            //                 });
-            //           },
-            //           child: ListTile(
-            //             title: Text(item!.car.name),
-            //           ),
-            //         ),
-            //       );
-            //     }),
-            //   ),
-
             : Column(
                 children: [
                   ...garage.entries.map((e) {
@@ -127,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           trailing: InkResponse(
                             child: const Icon(Icons.delete),
                             onTap: () async {
+                              //menghapus data mobil dalam garasi
                               final result =
                                   await dataSource.deletedCarInGarage(
                                 idGarage: key,
@@ -173,6 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ElevatedButton(
                 onPressed: () async {
+                  //memuat ulang data garasi setelah menambah data garasi
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(

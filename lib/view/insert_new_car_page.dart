@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:realm_flutter/model/car_model.dart';
 
-import '../data/db/local/local_data_source.dart';
+import '../data/db/local/data_source.dart';
 
 class InsertNewCarPage extends StatefulWidget {
   const InsertNewCarPage({Key? key}) : super(key: key);
@@ -60,9 +60,10 @@ class _InsertPageState extends State<InsertNewCarPage> {
                         model: models!,
                       );
 
-                      final dataSource = LocalDataSource();
-                      final result =
-                          await dataSource.insertNewCar(carModel: carModel);
+                      final dataSource = DataSource();
+                      final result = await dataSource.insertNewCar(
+                        carModel: carModel,
+                      );
 
                       Future.delayed(
                         const Duration(milliseconds: 0),

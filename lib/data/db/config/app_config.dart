@@ -1,8 +1,10 @@
 import 'package:realm/realm.dart';
 
+//app id dari atlas mongo db
 const appId = 'belajarmongo-enfwb';
 
-class Config {
+//app config
+class AppConfig {
   AppConfiguration appConfiguration = AppConfiguration(
     appId,
     defaultRequestTimeout: const Duration(seconds: 120),
